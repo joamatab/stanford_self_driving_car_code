@@ -23,13 +23,16 @@ class StatusCenter:
   def requestHandler(self, req):
 
     if self._isValid(req):
-      rospy.loginfo("Request for status " + StatusCenter.statusToString(req.status) + " success")
+      rospy.loginfo(
+          f"Request for status {StatusCenter.statusToString(req.status)} success"
+      )
       self.status.status = req.status
       self.status.header.stamp = rospy.Time.now()
       center.pub.publish(self.status)
       return ()
     else:
-      rospy.loginfo("Request for status " + StatusCenter.statusToString(req.status) + " failed")
+      rospy.loginfo(
+          f"Request for status {StatusCenter.statusToString(req.status)} failed")
       return None
       
 
@@ -37,9 +40,7 @@ class StatusCenter:
     '''
     Validate request for a change in status
     '''
-    if req.status < DriveStatus.ERROR or req.status > DriveStatus.RUN:
-      return False
-    return True
+    return req.status >= DriveStatus.ERROR and req.status <= DriveStatus.RUN
 
   @staticmethod
   def statusToString(status):
